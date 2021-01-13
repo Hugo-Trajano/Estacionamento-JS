@@ -8,28 +8,46 @@ function cadastraVeiculo(e){
     var time = new Date(); //captura hora e data//
 
     //criar obejo CAROO//
-    carro = {
+    if(!modeloCarro && !placaCarro){
+        alert("Por favor preencha os campos em branco!");
+        return false;
+    }
+
+    var carro = {
         modelo: modeloCarro,
         placa: placaCarro,
         hora: time.getHours(),
         minutos: time.getMinutes()
     }
   
-    console.log(carro);
 
-        if(localStorage.getItem('patio') === null){
+        if(localStorage.getItem('patio2') === null){
            var carros = [];
            carros.push(carro);
            localStorage.setItem('patio2', JSON.stringify(carros));
         }else{
             var carros = JSON.parse(localStorage.getItem('patio2'));
-            carro.push(carro);
+            carros.push(carro);
             localStorage.setItem('patio2', JSON.stringify(carros));
         }
+    document.getElementById('formulario').reset();
 
     mostraPatio();
 
     e.preventDefault();
+}
+function apagarVeiculo(placa){
+    var carros = JSON.parse(localStorage.getItem('patio2'));
+
+    for(var i = 0; i < carros.length; i++){
+        if(carros[i].placa == placa){
+            carros.splice(i, 1);
+        }
+
+        localStorage.setItem('patio2', JSON.stringify(carros));
+    }
+
+    mostraPatio();
 }
 
 function mostraPatio(){
@@ -46,7 +64,8 @@ function mostraPatio(){
 
         carrosResultado.innerHTML += '<tr><td>' + modelo +
                                      '</td><td>' + placa +
-                                     '</td><td>' + hora + ' : ' + minutos +
+                                     '</td><td>' + hora + ' : ' + minutos + 
+                                     '</td><td><button class="btn btn-danger" onclick="apagarVeiculo(\''+ placa +'\')">Excluir</button></td>' +
                                      '</tr>';
     }
 }
